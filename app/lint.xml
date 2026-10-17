@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <!-- All UI text goes through strings.xml (English + Urdu). -->
+    <issue id="HardcodedText" severity="error" />
+    <issue id="SetTextI18n" severity="error" />
+    <!-- Urdu translation lands in M6; until then partial translations are expected. -->
+    <issue id="MissingTranslation" severity="warning" />
+    <!-- RTL: start/end, never left/right. -->
+    <issue id="RtlHardcoded" severity="error" />
+</lint>
