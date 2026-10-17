@@ -1,0 +1,27 @@
+*.iml
+.gradle/
+.kotlin/
+/local.properties
+/.idea/
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+/app/build/
+/app/release/
+*.apk
+*.aab
+# Release signing key: back it up offline. Losing it means you can never update the Play listing.
+*.jks
+*.keystore
+!debug.keystore
+keystore.properties
+
+# Firebase config (M6): project identifiers, never commit
+google-services.json
+
+# Firebase admin key for tools/reset-password (full admin access: never commit)
+*service-account*.json
+*-firebase-adminsdk-*.json
+tools/**/node_modules/
