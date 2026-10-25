@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Shopfront: scalloped awning over a shop with a door and a window. Inside the 66dp safe zone. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp" android:height="108dp"
+    android:viewportWidth="108" android:viewportHeight="108">
+    <path android:fillColor="#FFFFFF"
+        android:pathData="M28,32 H80 V45 A6.5,6.5 0 0 1 67,45 A6.5,6.5 0 0 1 54,45 A6.5,6.5 0 0 1 41,45 A6.5,6.5 0 0 1 28,45 Z" />
+    <path android:fillColor="#FFFFFF" android:fillType="evenOdd"
+        android:pathData="M32,54 H76 V78 H32 Z M50,62 H62 V78 H50 Z M37,62 H45 V70 H37 Z" />
+</vector>
