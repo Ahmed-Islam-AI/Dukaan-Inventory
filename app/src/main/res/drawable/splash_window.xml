@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Launch window before Compose draws (Android 8-11): saffron with the store mark, like the landing page. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/brand_saffron" />
+    <item android:width="108dp" android:height="108dp" android:gravity="center" android:drawable="@drawable/ic_splash" />
+</layer-list>
