@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dukaan template thumbnail. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp" android:height="24dp"
+    android:viewportWidth="24" android:viewportHeight="24">
+    <path android:fillColor="#FF000000" android:pathData="M3,3h18v6H3z M3,11.5h18v1.5H3z M3,15h18v1.5H3z M12,18.5h9v2.5h-9z" />
+</vector>
