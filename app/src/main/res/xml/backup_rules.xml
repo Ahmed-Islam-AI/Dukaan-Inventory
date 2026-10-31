@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 8-11: same rule as data_extraction_rules.xml, only the snapshot file. -->
+<full-backup-content>
+    <include domain="file" path="backup/dukaan.db" />
+</full-backup-content>
