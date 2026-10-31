@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Android 12+ system splash: saffron background, white store mark. -->
+    <style name="Theme.Dukaan" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_window</item>
+        <item name="android:windowSplashScreenBackground">@color/brand_saffron</item>
+        <item name="android:windowSplashScreenAnimatedIcon">@drawable/ic_splash</item>
+    </style>
+</resources>
