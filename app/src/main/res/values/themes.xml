@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose owns theming (core/ui/theme/Theme.kt). This is only the pre-Compose launch theme:
+         saffron with the store mark, so launch flows into the landing page without a white flash. -->
+    <style name="Theme.Dukaan" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_window</item>
+    </style>
+</resources>
