@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android 12+ (D-11, D-28): back up ONLY the WAL-safe snapshot written by BackupManager.
+     Never the live database (could restore a half-written WAL) and never device prefs
+     (a restore must get a fresh deviceId and a new receipt prefix, D-18). -->
+<data-extraction-rules>
+    <cloud-backup>
+        <include domain="file" path="backup/dukaan.db" />
+    </cloud-backup>
+    <device-transfer>
+        <include domain="file" path="backup/dukaan.db" />
+    </device-transfer>
+</data-extraction-rules>
