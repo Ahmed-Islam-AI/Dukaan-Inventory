@@ -133,7 +133,7 @@
 
 Dukaan is not on the Play Store yet. To try it, build the debug APK (below) and install it with
 `./gradlew installDebug`, or copy `app/build/outputs/apk/debug/app-debug.apk` to an Android 8.0+
-phone and open it.
+phone and open it. To send a test build to someone else, follow [SHARE_APK.md](SHARE_APK.md).
 
 On first launch, tap **Get started**, create an account and enter your shop's name and type (a build
 without Firebase skips the account and goes straight to the shop details). Then add your first item
