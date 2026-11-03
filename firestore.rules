@@ -1,0 +1,97 @@
+rules_version = '2';
+
+// Dukaan security rules (M7 phases 1-3, docs/ACCOUNTS.md § Firestore layout).
+// Publish: Firebase console → Firestore Database → Rules → paste this file → Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function userPath(uid) { return /databases/$(database)/documents/users/$(uid); }
+    function shopPath(shopId) { return /databases/$(database)/documents/shops/$(shopId); }
+    function phonePath(key) { return /databases/$(database)/documents/phoneLogins/$(key); }
+    function invitePath(key) { return /databases/$(database)/documents/invites/$(key); }
+
+    function hasProfile() { return signedIn() && exists(userPath(request.auth.uid)); }
+    function me() { return get(userPath(request.auth.uid)).data; }
+    function shop(shopId) { return get(shopPath(shopId)).data; }
+    function ownerOf(shopId) { return signedIn() && shop(shopId).ownerUid == request.auth.uid; }
+    // A member of an active shop. Blocking a shop (status = "blocked", console only) cuts every member off.
+    function activeMember(shopId) { return hasProfile() && me().shopId == shopId && shop(shopId).status == 'active'; }
+
+    // Is the invite key (lower-case email or phone digits) this signed-in person?
+    function isMe(key) {
+      return signedIn() && (
+        (request.auth.token.email != null && request.auth.token.email.lower() == key)
+        || (exists(phonePath(key)) && get(phonePath(key)).data.uid == request.auth.uid));
+    }
+
+    match /users/{uid} {
+      // Yourself, or the owner reading their staff (Staff screen).
+      allow read: if signedIn() && (request.auth.uid == uid
+        || (hasProfile() && me().role == 'owner' && resource.data.shopId == me().shopId));
+      allow create: if signedIn() && request.auth.uid == uid && (
+        // Owner: only of a shop they create in the same batch (getAfter), never someone else's.
+        (request.resource.data.role == 'owner'
+          && getAfter(shopPath(request.resource.data.shopId)).data.ownerUid == request.auth.uid)
+        // Staff: only with an invite addressed to them, for that shop.
+        || (request.resource.data.role == 'staff'
+          && isMe(request.resource.data.inviteKey)
+          && get(invitePath(request.resource.data.inviteKey)).data.shopId == request.resource.data.shopId));
+      // Own details only; role and shop can't change from the app.
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.shopId == resource.data.shopId;
+      // The owner removes a staff member (their phone is wiped at its next check).
+      allow delete: if signedIn() && resource.data.role == 'staff' && ownerOf(resource.data.shopId);
+    }
+
+    match /shops/{shopId} {
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.status == 'active';
+      // Members read their shop (also to see status = blocked, which the app acts on).
+      allow read: if hasProfile() && me().shopId == shopId;
+      // Owner edits shop details, never its owner or status (status is console-only).
+      allow update: if signedIn() && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && request.resource.data.status == resource.data.status;
+      allow delete: if false;
+
+      // The shop's cloud copy: every member reads it (staff start from it), only the owner writes it.
+      match /backup/{doc} {
+        allow read: if activeMember(shopId);
+        allow write: if activeMember(shopId) && ownerOf(shopId);
+      }
+      match /backupChunks/{doc} {
+        allow read: if activeMember(shopId);
+        allow write: if activeMember(shopId) && ownerOf(shopId);
+      }
+      // Live sync (phase 3): an append-only log of changes. Members read it and add to it, signed
+      // with their uid and stamped with the server's time; nobody edits or deletes an entry.
+      match /changes/{changeId} {
+        allow read: if activeMember(shopId);
+        allow create: if activeMember(shopId)
+          && request.resource.data.uid == request.auth.uid
+          && request.resource.data.at == request.time
+          && request.resource.data.keys().hasOnly(['by', 'uid', 'at', 'n', 'v', 'data']);
+        allow update, delete: if false;
+      }
+    }
+
+    // Phone + password login: number → login email. Single get only (never list), create once.
+    match /phoneLogins/{digits} {
+      allow get: if true;
+      allow list: if false;
+      allow create: if signedIn() && request.resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Staff invites, keyed by the invited phone digits or lower-case email (one pending invite each).
+    match /invites/{key} {
+      allow create: if ownerOf(request.resource.data.shopId) && request.resource.data.role == 'staff';
+      allow get: if isMe(key) || (signedIn() && ownerOf(resource.data.shopId));
+      allow list: if signedIn() && ownerOf(resource.data.shopId);
+      allow delete: if signedIn() && (isMe(key) || ownerOf(resource.data.shopId));
+    }
+  }
+}
