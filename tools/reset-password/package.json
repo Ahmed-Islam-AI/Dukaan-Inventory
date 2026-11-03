@@ -1,0 +1,9 @@
+{
+  "name": "dukaan-reset-password",
+  "private": true,
+  "type": "module",
+  "description": "Owner-only: set a new password for a Dukaan account (phone accounts have no reset email). docs/ACCOUNTS.md",
+  "dependencies": {
+    "firebase-admin": "14.5.0"
+  }
+}
