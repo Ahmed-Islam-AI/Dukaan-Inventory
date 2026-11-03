@@ -1,0 +1,85 @@
+# Single source of truth for dependency versions. Do not inline versions elsewhere.
+# Baseline copied from a set already verified on this machine (AGP 9.4 + Gradle 9.6 + JDK 25).
+# Entries marked (M<n>) are pinned but not wired into app/build.gradle.kts until that milestone.
+# Their versions are NOT yet build-verified: confirm against the latest stable release when wiring.
+
+[versions]
+agp = "9.4.0"                    # requires Gradle 9.6.0, JDK 17+
+kotlin = "2.4.10"                # compose compiler plugin uses the SAME version
+ksp = "2.3.10"
+composeBom = "2026.08.00"
+
+coreKtx = "1.19.0"
+activity = "1.13.0"
+lifecycle = "2.11.0"
+navigation = "2.10.0"
+
+room = "3.0.2"                   # coordinates are androidx.room3, plugin id androidx.room3
+sqlite = "2.7.0"
+coroutines = "1.10.2"
+
+datastore = "1.2.1"              # (M1)
+camerax = "1.6.2"                # M3, verified
+mlkitBarcode = "17.3.0"          # M3, verified; bundled model, works offline on first install
+biometric = "1.1.0"              # (M6) last stable; 1.2+ are alphas
+firebaseBom = "34.19.0"          # M7: auth + firestore + crashlytics. 35.x is a new major, not adopted yet
+credentials = "1.6.0"            # M7: Credential Manager (Google sign-in), last stable
+googleId = "1.2.1"               # M7: Google ID token option for Credential Manager
+googleServices = "4.5.0"         # (M6)
+crashlyticsPlugin = "3.0.6"      # (M6)
+
+junit = "4.13.2"
+androidxTestExt = "1.3.0"
+androidxTestRunner = "1.7.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-viewmodel-compose = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
+
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-compose-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-compose-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-compose-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-compose-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+androidx-room3-runtime = { group = "androidx.room3", name = "room3-runtime", version.ref = "room" }
+androidx-room3-compiler = { group = "androidx.room3", name = "room3-compiler", version.ref = "room" }
+# Bundled SQLite in the APK (D-32): every phone runs the same modern SQLite as the tests.
+# Android 8-10 ship SQLite < 3.27, which lacks VACUUM INTO (backup snapshot).
+androidx-sqlite-bundled = { group = "androidx.sqlite", name = "sqlite-bundled", version.ref = "sqlite" }
+# Must be the -jvm variant: plain sqlite-bundled resolves to Android .so files in JVM unit tests.
+androidx-sqlite-bundled-jvm = { group = "androidx.sqlite", name = "sqlite-bundled-jvm", version.ref = "sqlite" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+
+# --- Pinned, not yet wired ---
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }   # M1
+androidx-camera-camera2 = { group = "androidx.camera", name = "camera-camera2", version.ref = "camerax" }                     # M3
+androidx-camera-lifecycle = { group = "androidx.camera", name = "camera-lifecycle", version.ref = "camerax" }                 # M3
+androidx-camera-view = { group = "androidx.camera", name = "camera-view", version.ref = "camerax" }                           # M3
+mlkit-barcode = { group = "com.google.mlkit", name = "barcode-scanning", version.ref = "mlkitBarcode" }                      # M3
+androidx-biometric = { group = "androidx.biometric", name = "biometric", version.ref = "biometric" }                          # M6
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }                         # M6
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }                                      # M6
+firebase-auth = { group = "com.google.firebase", name = "firebase-auth" }                                                    # M7
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore" }                                          # M7
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }                 # M7
+androidx-credentials-play = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }  # M7
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleId" }        # M7
+
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidxTestExt" }
+androidx-test-runner = { group = "androidx.test", name = "runner", version.ref = "androidxTestRunner" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+# AGP 9 has built-in Kotlin support: org.jetbrains.kotlin.android is NOT applied.
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+room = { id = "androidx.room3", version.ref = "room" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }                                  # M6
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }                        # M6
