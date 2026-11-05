@@ -37,6 +37,14 @@ Open the app and do a sale, then share the receipt. `docs/RELEASE.md` has the fu
 
 ## 2. Send it
 
+- **GitHub release (download link):** tag the pushed commit and attach the APK:
+  ```bash
+  cp app/build/outputs/apk/release/app-release.apk Dukaan-0.17.0.apk
+  gh release create v0.17.0 Dukaan-0.17.0.apk --target main --title "Dukaan 0.17.0" --notes "..."
+  ```
+  Push first, so the tag points at the code you built. The repo is public, so anyone with the link
+  can install it. Share https://github.com/Ahmed-Islam-AI/Dukaan-Inventory/releases/latest: it
+  always opens the newest release (not pre-releases).
 - **WhatsApp:** send it as a *Document*, not as media.
 - **Google Drive:** upload it, share the link, and tell the client to tap **Download**.
 
